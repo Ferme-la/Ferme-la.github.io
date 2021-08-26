@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<head>
+<title>A Place For Students to AHD</title>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/css/mdui.min.css"
+  integrity="sha384-cLRrMq39HOZdvE0j6yBojO4+1PrHfB7a9l5qLcmRm/fiWXYY+CndJPmyu5FV/9Tw"
+  crossorigin="anonymous"
+/>
+<script
+  src="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/js/mdui.min.js"
+  integrity="sha384-gCMZcshYKOGRX9r6wbDrvF+TcCCswSHFucUzUPwka+Gr+uHgjlYvkABr95TCOz3A"
+  crossorigin="anonymous"
+></script>
+<script src="js/jquery.min.js"></script>
+<style>
+body {
+	margin-right: 0px;
+	background-repeat: no-repeat;
+	background-size:150% 150%;
+	background-color: #ffffff;
+	margin-bottom: 0px;
+	background-attachment: fixed;
+}
+footer {
+	clear: both;
+    text-align: center;
+    padding: 5px;
+    margin-top: 12px;
+	}
+.font01 {
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: underline;
+    }
+canvas {
+    position : fixed;
+    top: 0;
+    left: 0;
+    }
+.emoji01 {
+    cursor: url("img/emoji.png"),auto;
+}
+.emoji02 {
+    cursor: url("img/emoji_2.png"),auto;
+}
+.emoji03 {
+    cursor: url("img/emoji_3.png"),auto;
+}
+a {
+   cursor: url("img/emoji_3.png"),auto;
+}
+</style>
+</head>
+<body class="mdui-theme-primary-blue mdui-appbar-with-toolbar emoji02">
+<canvas id="canvas"></canvas>
+<!-- best viewed in chrome -->
+
+<script>
+// fun options!
+const PARTICLES_PER_FIREWORK = 150; // 100 - 400 or try 1000
+const FIREWORK_CHANCE = 0.02; // percentage, set to 0 and click instead
+const BASE_PARTICLE_SPEED = 0.6; // between 0-4, controls the size of the overall fireworks
+const FIREWORK_LIFESPAN = 600; // ms
+const PARTICLE_INITIAL_SPEED = 4.5; // 2-8
+
+// not so fun options =\
+const GRAVITY = 9.8;
+
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let particles = [];
+let disableAutoFireworks = false;
+let resetDisable = 0;
+
+let loop = () => {
+
+  if (!disableAutoFireworks && Math.random() < FIREWORK_CHANCE) {
+    createFirework();
+  }
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  particles.forEach((particle, i) => {
+    particle.animate();
+    particle.render();
+    if (particle.y > canvas.height
+        || particle.x < 0
+        || particle.x > canvas.width
+        || particle.alpha <= 0
+       ) {
+      particles.splice(i, 1);
+    }
+  });
+
+  requestAnimationFrame(loop);
+
+};
+
+let createFirework = (
+    x = Math.random() * canvas.width,
+    y = Math.random() * canvas.height
+  ) => {
+
+  let speed = (Math.random() * 2) + BASE_PARTICLE_SPEED;
+  let maxSpeed = speed;
+
+  let red = ~~(Math.random() * 255);
+  let green = ~~(Math.random() * 255);
+  let blue = ~~(Math.random() * 255);
+
+  // use brighter colours
+  red = (red < 150 ? red + 150 : red);
+  green = (green < 150 ? green + 150 : green);
+  blue = (blue < 150 ? blue + 150 : blue);
+
+  // inner firework
+  for (let i = 0; i < PARTICLES_PER_FIREWORK; i++) {
+    let particle = new Particle(x, y, red, green, blue, speed);
+    particles.push(particle);
+
+    maxSpeed = (speed > maxSpeed ? speed : maxSpeed);
+  }
+
+  // outer edge particles to make the firework appear more full
+  for (let i = 0; i < 40; i++) {
+    let particle = new Particle(x, y, red, green, blue, maxSpeed, true);
+    particles.push(particle);
+  }
+
+};
+
+class Particle {
+
+  constructor(
+    x = 0,
+    y = 0,
+    red = ~~(Math.random() * 255),
+    green = ~~(Math.random() * 255),
+    blue = ~~(Math.random() * 255),
+    speed,
+    isFixedSpeed
+  ) {
+
+    this.x = x;
+    this.y = y;
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
+    this.alpha = 0.05;
+    this.radius = 1 + Math.random();
+    this.angle = Math.random() * 360;
+    this.speed = (Math.random() * speed) + 0.1;
+    this.velocityX = Math.cos(this.angle) * this.speed;
+    this.velocityY = Math.sin(this.angle) * this.speed;
+    this.startTime = (new Date()).getTime();
+    this.duration = Math.random() * 300 + FIREWORK_LIFESPAN;
+    this.currentDiration = 0;
+    this.dampening = 30; // slowing factor at the end
+
+    this.colour = this.getColour();
+
+    if (isFixedSpeed) {
+      this.speed = speed;
+      this.velocityY = Math.sin(this.angle) * this.speed;
+      this.velocityX = Math.cos(this.angle) * this.speed;
+    }
+
+    this.initialVelocityX = this.velocityX;
+    this.initialVelocityY = this.velocityY;
+
+  }
+
+  animate() {
+
+    this.currentDuration = (new Date()).getTime() - this.startTime;
+
+    // initial speed kick
+    if (this.currentDuration <= 200) {
+
+      this.x += this.initialVelocityX * PARTICLE_INITIAL_SPEED;
+      this.y += this.initialVelocityY * PARTICLE_INITIAL_SPEED;
+      this.alpha += 0.01;
+
+      this.colour = this.getColour(240, 240, 240, 0.9);
+
+    } else {
+
+      // normal expansion
+      this.x += this.velocityX;
+      this.y += this.velocityY;
+      this.colour = this.getColour(this.red, this.green, this.blue, 0.4 + (Math.random() * 0.3));
+
+    }
+
+    this.velocityY += GRAVITY / 1000;
+
+    // slow down particles at the end
+    if (this.currentDuration >= this.duration) {
+      this.velocityX -= this.velocityX / this.dampening;
+      this.velocityY -= this.velocityY / this.dampening;
+    }
+
+    if (this.currentDuration >= this.duration + this.duration / 1.1) {
+
+      // fade out at the end
+      this.alpha -= 0.02;
+      this.colour = this.getColour();
+
+    } else {
+
+      // fade in during expansion
+      if (this.alpha < 1) {
+        this.alpha += 0.03;
+      }
+
+    }
+  }
+
+  render() {
+
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+    ctx.lineWidth = this.lineWidth;
+    ctx.fillStyle = this.colour;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = this.getColour(this.red + 150, this.green + 150, this.blue + 150, 1);
+    ctx.fill();
+
+  }
+
+  getColour(red, green, blue, alpha) {
+
+    return `rgba(${red || this.red}, ${green || this.green}, ${blue || this.blue}, ${alpha || this.alpha})`;
+
+  }
+
+}
+
+let updateCanvasSize = () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+};
+
+
+// run it!
+
+updateCanvasSize();
+$(window).resize(updateCanvasSize);
+$(canvas).on('click', (e) => {
+
+  createFirework(e.clientX, e.clientY);
+
+  // stop fireworks when clicked, re-enable after short time
+  disableAutoFireworks = true;
+  clearTimeout(resetDisable);
+  resetDisable = setTimeout(() => {
+    disableAutoFireworks = false;
+  }, 5000);
+
+});
+
+loop();
+
+</script>
+<div class="mdui-appbar mdui-appbar-fixed emoji01">
+  <div class="mdui-toolbar mdui-color-theme-600 emoji01">
+    <a href="index.html" class="mdui-typo-headline emoji01">未知的世界</a>
+    <a class="mdui-typo-title emoji01">下载页面</a>
+    <div class="mdui-toolbar-spacer emoji01"></div>
+    <button onclick="triggerDayNight()" class="mdui-btn mdui-btn-icon emoji01" mdui-tooltip="{content:'切换显示模式', delay: 1000}"><i class="mdui-icon material-icons ">brightness_medium</i></button>
+  </div>
+</div>
+<div class="mdui-container">
+  <div class="mdui-typo mdui-row">
+    <h1 align="center">这是本站的下载页面，汇集了一些资源。</h1>
+    <blockquote>
+      请注意，由于经费（划去）原因，只有Firefox、Chrome和部分手机浏览器才支持点击直接下载。如果你对本站资源下载有任何疑问，请参考
+      <a href="Notice.html">下载帮助</a>。
+      <br />
+      如果参考后仍有疑问，请直接咨询<a href="https://message.bilibili.com/#/whisper/mid86887022"><del>万年老鸽子</del>版主</a>。
+    </blockquote>
+
+    <br />
+  </div>
+  <div class="mdui-table-fluid mdui-row">
+    <table class="mdui-table mdui-table-hoverable">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>名称</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>1</td>
+        <td><a class="mdui-ripple mdui-btn emoji03" href="https://istudyway-huabei3.oss-cn-zhangjiakou.aliyuncs.com/file/market/2020-09-04/1c00e9a7-459f-4ed8-9c3d-b2006a186874.apk" download="平板管家_V1.53.0_P for Samsung">平板管家_V1.53.0_P for Samsung</a>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><a class="mdui-ripple mdui-btn emoji03" href="https://istudyway-huabei3.oss-cn-zhangjiakou.aliyuncs.com/file/market/2020-10-19/d5442174-5b8e-443b-80ea-39718869b3cb.apk" download="未来教育.apk">未来教育.apk</a>
+        </td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><a class="mdui-ripple mdui-btn emoji03" href="https://istudyway-huabei3.oss-cn-zhangjiakou.aliyuncs.com/file/market/2020-10-14/ea76468d-6f78-4c54-a268-49f7d4dbf5a7.apk" download="市场.apk">市场.apk </a>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><a class="mdui-ripple mdui-btn emoji03" href="https://istudyway-huabei3.oss-cn-zhangjiakou.aliyuncs.com/file/market/2021-04-26/4721f995-13db-49d6-bd82-c7459d4b98c1.apk" download="平板管家_V1.0.3_hr_20210425 for HUAWEI.apk">平板管家_V1.0.3_hr_20210425 for HUAWEI.apk</a>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><a class="mdui-ripple mdui-btn emoji03" href="https://istudyway-huabei3.oss-cn-zhangjiakou.aliyuncs.com/file/market/2021-01-20/e7680fb7-b543-4edd-86bc-ce221d01f725.apk" download="平板管家_V2.0.9_HW（正式） for HUAWEI.apk">平板管家_V2.0.9_HW（正式） for HUAWEI.apk</a>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <footer>
+    <div class="mdui-typo">
+      <br /><br /><br /><br /><br /><br /><br />
+      <p>Website Editor : Kugiki Makoto<br />1群 : 1083049012 (群主 : Kugiki Makoto)</br><code>网页会不定时更新，请随时关注。</code></p>
+    </div>
+    <a class="mdui-btn mdui-ripple" href="http://afdian.net/@Hatoki_Offical"><span class="font01 emoji03">爱发电个人主页</span></a>
+  </footer>
+
+</div>
+</body>
+<script type="text/javascript">
+  function triggerDayNight(){
+    if(document.body.getAttribute('class').indexOf('mdui-theme-layout-dark')>-1){
+      document.body.classList.remove('mdui-theme-layout-dark')
+      localStorage.setItem('dark','0')
+    }else{
+      document.body.classList.add('mdui-theme-layout-dark')
+      localStorage.setItem('dark','1')
+    }
+  }
+  if(localStorage.getItem('dark') == null || localStorage.getItem('dark') == 'undifined'){
+    localStorage.setItem('dark','0')
+  }
+  if(localStorage.getItem('dark') =='1'){
+    document.body.classList.add('mdui-theme-layout-dark')
+  }
+</script>
+
+</html>
