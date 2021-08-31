@@ -14,7 +14,7 @@
 ></script>
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery.cookie-1.4.1.min.js"></script>
-  <style>
+<style>
 body {
 	margin-right: 0px;
 	background-repeat: no-repeat;
@@ -22,39 +22,46 @@ body {
 	background-color: #ffffff;
 	margin-bottom: 0px;
 	background-attachment: fixed;
+
+
 }
 footer {
 	clear: both;
     text-align: center;
     padding: 5px;
-    margin-top: -50px;
+    margin-top: -150px;
 	}
 .font01 {
     font-size: 20px;
     font-weight: bold;
     text-decoration: underline;
     }
-.font02 {
-	font-size: 35px;
-	color: #FF3030;
-	}
 canvas {
     position : fixed;
     top: 0;
     left: 0;
     }
+
+
+.bq {
+    border-left: 3px solid #00FF7F;
+}
+.sa {
+    position: relative;
+    z-index: 1;
+    margin-top: -150px;}
 </style>
 </head>
-<body class="mdui-theme-primary-blue mdui-appbar-with-toolbar emoji02" onload="inst.close()">
+<body class="mdui-theme-primary-blue mdui-appbar-with-toolbar mdui-drawer-body-left emoji02" onload="inst.close()" >
 <canvas id="canvas"></canvas>
 <!-- best viewed in chrome -->
 
-<div id="ct" class="mdui-appbar mdui-appbar-fixed emoji01">
+<div class="mdui-appbar mdui-appbar-fixed">
   <div class="mdui-toolbar mdui-color-theme-600 emoji01">
     <button id="toggle" class="mdui-btn mdui-btn-icon mdui-m-a-1 emoji01"><i class="mdui-icon material-icons emoji01">menu</i></button>
     <a href="index.html" class="mdui-typo-headline emoji01">未知的世界</a>
-    <a class="mdui-typo-title emoji01">下载说明</a>
-    <div class="mdui-toolbar-spacer emoji01"></div>
+    <span class="mdui-typo-title">Hello！</span>
+    <div class="mdui-toolbar-spacer"></div>
     <button onclick="triggerDayNight()" class="mdui-btn mdui-btn-icon emoji01" mdui-tooltip="{content:'切换显示模式', delay: 1000}"><i class="mdui-icon material-icons ">brightness_medium</i></button>
     <button class="mdui-btn mdui-btn-icon emoji01" id="openOCDDialog" mdui-tooltip="{content:'强迫症选项', delay: 1000}"><i class="mdui-icon material-icons">brush</i></button>
   </div>
@@ -108,32 +115,72 @@ canvas {
   </div>
   <div class="mdui-dialog-actions">
     <button onclick="ocdOptionsSave(false)" class="mdui-btn mdui-ripple">取消</button>
-    <button onclick="ocdOptionsSave(true)" class="mdui-btn mdui-ripple">保存</button>
+    <button onclick="ocdOptionsSave(true);" class="mdui-btn mdui-ripple">保存</button>
+  </div>
+</div>
+<script>
+	var inxt = new mdui.Dialog("#example-3");
+	document.getElementById('open').addEventListener('click', function () {
+		inxt.open();
+	});
+    var drawer = document.getElementById('example-3');
+    drawer.addEventListener('open.mdui.dialog', function () {
+        console.log('open');
+    });
+    drawer.addEventListener('opened.mdui.dialog', function () {
+        console.log('opened');
+    });
+</script>
+<div class="mdui-container">
+  <button class="mdui-btn mdui-color-theme-accent mdui-ripple" id="open">open</button>
+  <div class="mdui-dialog" id="example-3" mdui-dialog="options">
+    <div class="mdui-dialog-content">
+      <div class="mdui-dialog-title">Use Google's location service?</div>
+      Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.
+      <br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test
+    </div>
+    <div class="mdui-dialog-actions">
+      <button class="mdui-btn mdui-ripple" mdui-dialog-close>no thanks</button>
+      <button class="mdui-btn mdui-ripple" mdui-dialog-confirm>turn on speeboost</button>
+    </div>
   </div>
 </div>
 <div class="mdui-container">
   <div class="mdui-typo mdui-row">
-    <h1 align="center">这是一些下载说明</h1>
-    <blockquote>
-      <p><b>注意，本页上传的图片均存于GitHub图床，故部分用户可能需要“全球互联网权限”<del>懂的都懂</del>，特此说明。</b></p>
+    <h1 align="center">恭喜您发现此站！
+      <br />
+      Congratulations on discovering this website!</h1>
+    <blockquote class="bq">
+      <p>AHD同行会在任何一个地方尝试这个账号（确信）</p>
+      <p >本网站用爱发电，故不存在经费。网页较简陋，将就吧（什</p>
     </blockquote>
-    <hr size="20">
-    <p class="STYLE5">由于你平台普通账号上传文件的限制及人类的本质<del class="emoji03">白嫖</del>，在本站下载文件可能会有所不便，故版主在此说明。</p>
-    <p class="STYLE5">如图。</p>
-    <p><img class="emoji03" src="https://raw.githubusercontent.com/HatokiOfficial/Image_for_JDmdm001/master/note1.png" referrerpolicy="no-referrer" alt="note1"></p>
-    <p class="STYLE5">目前为止这些文件的下载链接都是<del>从慧道后台F12里面复制粘贴的</del>外链，仅少数浏览器支持点击直接下载。<del>要是大家能够资助一点的话我们会直接上传到你平台的。</del></p>
-    <p>更多的情况下你点入链接后看到的情况是这样的：</p>
-    <p><img class="emoji03" src="https://raw.githubusercontent.com/HatokiOfficial/Image_for_JDmdm001/master/note2.png" referrerpolicy="no-referrer" alt="note2"></p>
-    <p class="STYLE5">这是因为这些外链全部都要检测你从慧道网页获取的JSESSIONID，然而你电脑Cookies并没有相应的JSESSIONID。（准确地说是你并没有能够通过检测的Cookies。）</p>
-    <p class="STYLE5">这时就会有大佬出来说“你怎么不自己伪造一个JSESSIONID呢？”，Sorry,除开登入后台账号的办法,or I can't.<span class="font02">IF YOU CAN.</span></p>
-    <p class="STYLE5">这时候只需要复制地址，然后粘贴，再回车访问，就能正常下载了。如图。</p>
-    <p align="center"><img class="emoji03" src="https://raw.githubusercontent.com/HatokiOfficial/Image_for_JDmdm001/master/note3.gif" referrerpolicy="no-referrer" alt="note3"></p>
-    <p>&nbsp;</p>
+
     <br />
   </div>
-
+  <div class="mdui-row">
+    <div class=""mdui-col-xs-12>
+      <a class="mdui-btn mdui-color-theme-600 mdui-btn-block mdui-ripple emoji03" href="Download.html">本站下载页面</a><br />
+    </div>
+    <div class=""mdui-col-xs-12>
+      <a class="mdui-btn mdui-color-theme-600 mdui-btn-block mdui-ripple emoji03" href="SpecialThanks.html">特别鸣谢页面</a>
+    </div>
+  </div>
+  
+  <footer>
+    <div class="mdui-typo">
+      <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      <p>Website Editor : Kugiki Makoto<br />1群 : 1083049012 (群主 : Kugiki Makoto)</br><code>网页会不定时更新，请随时关注。</code></p>
+    </div>
+    <a class="mdui-btn mdui-ripple emoji03" href="http://afdian.net/@Hatoki_Offical"><span class="font01">爱发电个人主页</span></a>
+  </footer>
 </div>
+
+
+<audio id="audio" class="sa" src="风居住的街道_爱给网_aigei_com.mp3" controls></audio>
+
 </body>
 <script type="text/javascript" src="js/utils.js">
 </script>
+
+
 </html>

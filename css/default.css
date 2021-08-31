@@ -1,0 +1,12 @@
+.emoji01 {
+    cursor: url("../img/emoji.png"),auto;
+}
+.emoji02 {
+    cursor: url("../img/emoji_2.png"),auto;
+}
+.emoji03 {
+    cursor: url("../img/emoji_3.png"),auto;
+}
+a {
+    cursor: url("../img/emoji_3.png"),auto;
+}
