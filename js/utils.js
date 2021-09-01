@@ -5,51 +5,7 @@ if(localStorage.getItem('dark') !== "0" && localStorage.getItem('dark') !== '1')
 if(localStorage.getItem('dark') ==='1'){
     document.body.classList.add('mdui-theme-layout-dark')
 }
-function openwin()
 
-{window.open("page.html","","width=200,height=200")}
-
-function get_cookie(Name)
-
-{var search = Name + "="
-
-var returnvalue = "";
-
-if (documents.cookie.length > 0) {
-
-offset = documents.cookie.indexOf(search)
-
-if (offset != -1) {
-
-offset += search.length
-
-end =documents.cookie.indexOf(";", offset);
-
-if (end == -1)
-
-end = documents.cookie.length;
-
-returnvalue=(documents.cookie.substring(offset,end))
-
-}
-
-}
-
-return returnvalue;
-
-}
-
-function loadpopup(){
-
-if(get_cookie("popped")==""){
-
-openwin()
-
-documents.cookie="popped=yes"
-
-}
-
-}
 function loadjscssfile(filename, filetype){
     if (filetype==="js"){
         var fileref=document.createElement('script')
